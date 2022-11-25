@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-const todoAxios = Axios.create({ baseURL: "http://localhost:3001/api" });
+const todoAxios = Axios.create({ baseURL: process.env.REACT_APP_APIBASEURL });
 
 /**
  * 查詢所有todo資料
