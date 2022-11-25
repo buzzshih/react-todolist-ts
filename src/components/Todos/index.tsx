@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { ITodoList } from "../TodoList";
 import classes from "./Todos.module.sass";
-import { deleteTodo } from "../../api";
+import { Divider, Modal, List, Typography, Input } from "antd";
+import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 interface Props {
   todos: ITodoList[];
   DeleteTodo: (_todoId: string) => Promise<string>;
-  UpdateTodo: (_todoId: string, _todo: string) => Promise<any>;
+  UpdateTodo: (_todo: string, _todoId: string) => Promise<any>;
 }
 
 const Todos = ({ todos, DeleteTodo, UpdateTodo }: Props) => {
   const [currentTodos, setCurrentTodos] = useState<ITodoList[]>([]);
+  const [edit, setEdit] = useState<boolean>(false);
+  const [databaseTodoId, setdatabaseTodoId] = useState<number>();
+  const [editValue, setEditValue] = useState<string>();
 
   useEffect(() => {
     if (todos.length < 1) return;
@@ -20,28 +24,65 @@ const Todos = ({ todos, DeleteTodo, UpdateTodo }: Props) => {
     setCurrentTodos(todos);
   }, [todos]);
 
+  const showModal = (_currenTodoId: number, _dbTodoId: number) => {
+    console.log("editValue", currentTodos[_currenTodoId].todo);
+    console.log("databaseTodoId", _dbTodoId);
+    setEditValue(currentTodos[_currenTodoId].todo);
+    setdatabaseTodoId(_dbTodoId);
+    setEdit(true);
+  };
+
+  useEffect(() => {
+    console.log(editValue);
+  }, [editValue]);
+
+  const editInputHandle = (_editValue: string) => {
+    setEditValue(_editValue);
+  };
+
+  const handleOk = () => {
+    setEdit(false);
+    console.log("editValue", editValue);
+    console.log("databaseTodoId", databaseTodoId);
+
+    if (editValue !== undefined && databaseTodoId !== undefined) {
+      UpdateTodo(editValue, databaseTodoId.toString());
+    }
+  };
+
+  const handleCancel = () => {
+    setEdit(false);
+  };
+
   return (
-    <>
-      {currentTodos.map((item) => (
-        <li className={classes.todoItem} key={item.id}>
-          <div>{item.todo}</div>
-          <div className={classes.buttonWrapper}>
-            <button
-              className={classes.button}
-              onClick={() => DeleteTodo(item.id.toString())}
-            >
-              remove
-            </button>
-            <button
-              className={classes.button}
-              onClick={() => UpdateTodo("todoUpdate", item.id.toString())}
-            >
-              modify
-            </button>
-          </div>
-        </li>
-      ))}
-    </>
+    <ol className={classes.todolistWrapper}>
+      <Divider orientation="left">待辦任務列表</Divider>
+      <List
+        // header={<div>Header</div>}
+        // bordered
+        dataSource={currentTodos}
+        renderItem={(item, index) => (
+          <List.Item className={classes.todoItem}>
+            <div>{item.todo}</div>
+            <div>
+              <EditTwoTone onClick={() => showModal(index, item.id)} />
+              <DeleteTwoTone onClick={() => DeleteTodo(item.id.toString())} />
+            </div>
+          </List.Item>
+        )}
+      />
+      <Modal
+        title="修改待辦任務"
+        open={edit}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <Input
+          value={editValue}
+          onChange={(e) => editInputHandle(e.target.value)}
+        />
+      </Modal>
+    </ol>
   );
 };
 

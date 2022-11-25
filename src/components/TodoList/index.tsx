@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Todos from "../Todos";
 import Axios from "axios";
 import { getTodos, updateTodo, deleteTodo, addTodo } from "../../api";
+import { Input, Button, Space } from "antd";
 
 export interface ITodoList {
   id: number;
@@ -80,25 +81,30 @@ const TodoList = () => {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        marginLeft: "1rem",
+        alignItems: "center",
       }}
     >
       <h1>ToDoList</h1>
-
-      <input
-        style={{ marginRight: "1rem" }}
-        type="text"
-        onChange={(e) => onChange(e.target.value)}
-      />
-      <button onClick={addToDoList}>add Todo</button>
-
-      <ol>
-        <Todos
-          todos={todoList}
-          DeleteTodo={DeleteTodo}
-          UpdateTodo={UpdateTodo}
+      <div
+        style={{
+          marginBottom: "1rem",
+          display: "flex",
+          width: "100%",
+          padding: "0rem 2rem",
+        }}
+      >
+        <Input
+          size="large"
+          style={{ width: "100%", marginRight: "1rem" }}
+          placeholder="要增加的代辦事項"
+          onChange={(e) => onChange(e.target.value)}
         />
-      </ol>
+        <Button size="large" onClick={addToDoList} type="primary">
+          新增任務
+        </Button>
+      </div>
+
+      <Todos todos={todoList} DeleteTodo={DeleteTodo} UpdateTodo={UpdateTodo} />
     </div>
   );
 };
