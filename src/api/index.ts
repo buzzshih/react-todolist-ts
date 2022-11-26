@@ -40,16 +40,11 @@ export const getTodosById = async (_todoId: string) => {
  */
 export const updateTodo = async (_todo: string, _todoId: string) => {
   try {
-    console.log(_todoId, _todo);
-    console.log(_todoId);
-    console.log(_todo);
-
     const { data } = await todoAxios.request({
       url: `/todos/${_todoId}`,
       method: "PUT",
       data: { todo: _todo },
     });
-    console.log(data);
 
     return data;
   } catch (error) {

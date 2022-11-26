@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Todos from "../Todos";
-import Axios from "axios";
 import { getTodos, updateTodo, deleteTodo, addTodo } from "../../api";
-import { Input, Button, Space } from "antd";
+import { Input, Button } from "antd";
 
 export interface ITodoList {
   id: number;
@@ -44,7 +43,6 @@ const TodoList = () => {
   const DeleteTodo = async (_todoId: string) => {
     try {
       const data = await deleteTodo(_todoId);
-      console.log(data);
       setTodoList(await getTodos());
       return data;
     } catch (error) {
@@ -71,6 +69,7 @@ const TodoList = () => {
   const addToDoList = async () => {
     if (inputValue !== null) {
       AddTodo(inputValue);
+      setInputValue(null);
     }
   };
 
@@ -98,6 +97,7 @@ const TodoList = () => {
           style={{ width: "100%", marginRight: "1rem" }}
           placeholder="要增加的代辦事項"
           onChange={(e) => onChange(e.target.value)}
+          value={inputValue ?? ""}
         />
         <Button size="large" onClick={addToDoList} type="primary">
           新增任務

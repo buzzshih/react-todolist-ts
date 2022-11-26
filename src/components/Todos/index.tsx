@@ -17,24 +17,16 @@ const Todos = ({ todos, DeleteTodo, UpdateTodo }: Props) => {
 
   useEffect(() => {
     if (todos.length < 1) return;
-    console.log("todos render");
-    console.log("todos", todos);
     todos.sort((a, b) => a.id - b.id);
 
     setCurrentTodos(todos);
   }, [todos]);
 
   const showModal = (_currenTodoId: number, _dbTodoId: number) => {
-    console.log("editValue", currentTodos[_currenTodoId].todo);
-    console.log("databaseTodoId", _dbTodoId);
     setEditValue(currentTodos[_currenTodoId].todo);
     setdatabaseTodoId(_dbTodoId);
     setEdit(true);
   };
-
-  useEffect(() => {
-    console.log(editValue);
-  }, [editValue]);
 
   const editInputHandle = (_editValue: string) => {
     setEditValue(_editValue);
@@ -42,9 +34,6 @@ const Todos = ({ todos, DeleteTodo, UpdateTodo }: Props) => {
 
   const handleOk = () => {
     setEdit(false);
-    console.log("editValue", editValue);
-    console.log("databaseTodoId", databaseTodoId);
-
     if (editValue !== undefined && databaseTodoId !== undefined) {
       UpdateTodo(editValue, databaseTodoId.toString());
     }
