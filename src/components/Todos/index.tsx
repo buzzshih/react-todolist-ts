@@ -10,22 +10,22 @@ interface Props {
 }
 
 const Todos = ({ todos, DeleteTodo, UpdateTodo }: Props) => {
-  const [currentTodos, setCurrentTodos] = useState<ITodoList[]>([]);
+  const [currentTodos, setCurrentTodos] = useState<ITodoList[] | null>(null);
   const [edit, setEdit] = useState<boolean>(false);
   const [databaseTodoId, setdatabaseTodoId] = useState<number>();
   const [editValue, setEditValue] = useState<string>();
 
   useEffect(() => {
-    if (todos.length < 1) return;
     todos.sort((a, b) => a.id - b.id);
-
     setCurrentTodos(todos);
   }, [todos]);
 
   const showModal = (_currenTodoId: number, _dbTodoId: number) => {
-    setEditValue(currentTodos[_currenTodoId].todo);
-    setdatabaseTodoId(_dbTodoId);
-    setEdit(true);
+    if (currentTodos !== null) {
+      setEditValue(currentTodos[_currenTodoId].todo);
+      setdatabaseTodoId(_dbTodoId);
+      setEdit(true);
+    }
   };
 
   const editInputHandle = (_editValue: string) => {
@@ -49,7 +49,7 @@ const Todos = ({ todos, DeleteTodo, UpdateTodo }: Props) => {
       <List
         // header={<div>Header</div>}
         // bordered
-        dataSource={currentTodos}
+        dataSource={currentTodos ?? []}
         renderItem={(item, index) => (
           <List.Item className={classes.todoItem}>
             <div>{item.todo}</div>
