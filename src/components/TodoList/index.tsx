@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Todos from "../Todos";
 import { getTodos, updateTodo, deleteTodo, addTodo } from "../../api";
 import { Input, Button } from "antd";
+import classes from "./Todolist.module.sass";
 
 export interface ITodoList {
   id: number;
@@ -74,27 +75,12 @@ const TodoList = () => {
   };
 
   return (
-    <div
-      style={{
-        fontSize: "18px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <h1>ToDoList</h1>
-      <div
-        style={{
-          marginBottom: "1rem",
-          display: "flex",
-          width: "100%",
-          padding: "0rem 2rem",
-        }}
-      >
+    <div className={classes.container}>
+      <h1>TODOLIST</h1>
+      <div className={classes.content}>
         <Input
           size="large"
-          style={{ width: "100%", marginRight: "1rem" }}
+          className={classes.todoInput}
           placeholder="要增加的代辦事項"
           onChange={(e) => onChange(e.target.value)}
           value={inputValue ?? ""}
