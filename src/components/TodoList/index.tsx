@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 import Todos from "../Todos";
-import { getTodos, updateTodo, deleteTodo, addTodo } from "../../api";
+import {
+  getTodos,
+  updateTodo,
+  deleteTodo,
+  addTodo,
+  updateTodoDone,
+} from "../../api";
 import { Input, Button } from "antd";
 import classes from "./Todolist.module.sass";
 
 export interface ITodoList {
   id: number;
   todo: string;
+  done: boolean;
 }
 
 const TodoList = () => {
@@ -52,9 +59,22 @@ const TodoList = () => {
     }
   };
 
-  const UpdateTodo = async (_todo: string, _todoId: string) => {
+  const UpdateTodo = async (_todoId: string, _todo: string) => {
     try {
-      const data = await updateTodo(_todo, _todoId);
+      const data = await updateTodo(_todoId, _todo);
+      setTodoList(await getTodos());
+      console.log(data);
+
+      return data;
+    } catch (error) {
+      console.log("error", error);
+      return error;
+    }
+  };
+
+  const UpdateTodoDone = async (_todoId: number, _done: boolean) => {
+    try {
+      const data = await updateTodoDone(_todoId, _done);
       setTodoList(await getTodos());
       return data;
     } catch (error) {
@@ -90,7 +110,12 @@ const TodoList = () => {
         </Button>
       </div>
 
-      <Todos todos={todoList} DeleteTodo={DeleteTodo} UpdateTodo={UpdateTodo} />
+      <Todos
+        todos={todoList}
+        DeleteTodo={DeleteTodo}
+        UpdateTodo={UpdateTodo}
+        UpdateTodoDone={UpdateTodoDone}
+      />
     </div>
   );
 };

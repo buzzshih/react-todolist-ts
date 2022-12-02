@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { ITodoList } from "../TodoList";
 import classes from "./Todos.module.sass";
-import { Divider, Modal, List, Typography, Input } from "antd";
+import { Divider, Modal, List, Typography, Input, Checkbox } from "antd";
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 interface Props {
   todos: ITodoList[];
   DeleteTodo: (_todoId: string) => Promise<string>;
-  UpdateTodo: (_todo: string, _todoId: string) => Promise<any>;
+  UpdateTodo: (_todoId: string, _todo: string) => Promise<any>;
+  UpdateTodoDone: (_todoId: number, _done: boolean) => Promise<any>;
 }
 
-const Todos = ({ todos, DeleteTodo, UpdateTodo }: Props) => {
+const Todos = ({ todos, DeleteTodo, UpdateTodo, UpdateTodoDone }: Props) => {
   const [currentTodos, setCurrentTodos] = useState<ITodoList[] | null>(null);
   const [edit, setEdit] = useState<boolean>(false);
   const [databaseTodoId, setdatabaseTodoId] = useState<number>();
   const [editValue, setEditValue] = useState<string>();
+
+  const { Text, Link, Paragraph } = Typography;
 
   useEffect(() => {
     todos.sort((a, b) => a.id - b.id);
@@ -32,10 +35,15 @@ const Todos = ({ todos, DeleteTodo, UpdateTodo }: Props) => {
     setEditValue(_editValue);
   };
 
+  useEffect(() => {
+    console.log(editValue);
+    console.log(databaseTodoId);
+  }, [editValue, databaseTodoId]);
+
   const handleOk = () => {
     setEdit(false);
     if (editValue !== undefined && databaseTodoId !== undefined) {
-      UpdateTodo(editValue, databaseTodoId.toString());
+      UpdateTodo(databaseTodoId.toString(), editValue);
     }
   };
 
@@ -52,7 +60,18 @@ const Todos = ({ todos, DeleteTodo, UpdateTodo }: Props) => {
         dataSource={currentTodos ?? []}
         renderItem={(item, index) => (
           <List.Item className={classes.todoItem}>
-            <div>{item.todo}</div>
+            <div>
+              <Checkbox
+                checked={item.done}
+                className={classes.checkbox}
+                onChange={(e) => UpdateTodoDone(item.id, e.target.checked)}
+              />
+              {item.done ? (
+                <Text delete>{item.todo}</Text>
+              ) : (
+                <Text>{item.todo}</Text>
+              )}
+            </div>
             <div>
               <EditTwoTone onClick={() => showModal(index, item.id)} />
               <DeleteTwoTone onClick={() => DeleteTodo(item.id.toString())} />

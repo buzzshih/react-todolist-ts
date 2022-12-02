@@ -38,12 +38,32 @@ export const getTodosById = async (_todoId: string) => {
  * @param _todoId todo id
  * @param _todo Want to modify todo data
  */
-export const updateTodo = async (_todo: string, _todoId: string) => {
+export const updateTodo = async (_todoId: string, _todo: string) => {
   try {
     const { data } = await todoAxios.request({
       url: `/todos/${_todoId}`,
       method: "PUT",
       data: { todo: _todo },
+    });
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+/**
+ *  修改該id todo狀態 是否已經完成
+ * @param _todoId todo id
+ * @param _done Want to modify todo data
+ */
+export const updateTodoDone = async (_todoId: number, _done: boolean) => {
+  try {
+    const { data } = await todoAxios.request({
+      url: `/todosDone/${_todoId}`,
+      method: "PUT",
+      data: { done: _done },
     });
 
     return data;
